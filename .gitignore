@@ -86,4 +86,9 @@ GoogleService-Info.plist
 .vscode/
 
 # Context (development planning files)
-# context/
+context/
+
+# Claude code configuration files
+.claude/
+.acode/
+.claude/*
