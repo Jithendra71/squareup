@@ -257,10 +257,7 @@ Check that all packages are installed without errors.
 4. **Enable Firebase Authentication**
    - Go to Authentication section
    - Click "Get Started"
-   - Enable "Email/Password" provider
-   - Enable "Google" provider (optional):
-     - Add support email
-     - Generate OAuth client ID
+   - Enable "Phone Number" provider
 
 5. **Set Up Firestore Database**
    - Go to Firestore Database
@@ -334,7 +331,7 @@ Check that all packages are installed without errors.
 - [ ] Firebase project created
 - [ ] iOS app registered with Firebase
 - [ ] Android app registered with Firebase
-- [ ] Authentication enabled (Email/Password, optionally Google)
+- [ ] Authentication enabled (Phone Number, optionally Google)
 - [ ] Firestore database created in test mode
 - [ ] Cloud Storage enabled
 - [ ] Firebase config files added to project
@@ -363,7 +360,7 @@ Check that all packages are installed without errors.
    ```typescript
    export interface User {
      id: string;
-     email: string;
+     phoneNumber: string;
      displayName: string;
      photoURL?: string;
      createdAt: Date;
@@ -383,7 +380,7 @@ Check that all packages are installed without errors.
      userId: string;
      displayName: string;
      photoURL?: string;
-     email: string;
+     phoneNumber: string;
    }
 
    export interface Expense {
@@ -484,15 +481,15 @@ Check that all packages are installed without errors.
    export const handleFirebaseError = (error: any): string => {
      switch (error.code) {
        case 'auth/user-not-found':
-         return 'No user found with this email';
+         return 'No user found with this phone';
        case 'auth/wrong-password':
          return 'Incorrect password';
-       case 'auth/email-already-in-use':
-         return 'Email already in use';
+       case 'auth/phone-already-in-use':
+         return 'Phone Number already in use';
        case 'auth/weak-password':
          return 'Password should be at least 6 characters';
-       case 'auth/invalid-email':
-         return 'Invalid email address';
+       case 'auth/invalid-phone-number':
+         return 'Invalid Phone number';
        case 'auth/network-request-failed':
          return 'Network error. Please check your connection';
        default:

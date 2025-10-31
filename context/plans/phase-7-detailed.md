@@ -313,9 +313,9 @@ This final phase focuses on refining the app to production quality. We'll improv
 
    **src/utils/validation.ts**:
    ```typescript
-   export const validateEmail = (email: string): boolean => {
-     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-     return emailRegex.test(email);
+   export const validatePhone = (phone: string): boolean => {
+     const phoneRegex = /^\d[10]$/;
+     return phoneRegex.test(phone);
    };
 
    export const validateAmount = (amount: string): boolean => {

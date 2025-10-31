@@ -30,7 +30,7 @@ See [Project Structure Documentation](./docs/PROJECT_STRUCTURE.md)
 3. Download configuration files:
    - `google-services.json` for Android (place in `android/app/`)
    - `GoogleService-Info.plist` for iOS (place in `ios/squareup/`)
-4. Enable Authentication (Email/Password), Firestore, and Storage in Firebase console
+4. Enable Authentication (Phone Number with OTP), Firestore, and Storage in Firebase console
 
 ## Development
 
