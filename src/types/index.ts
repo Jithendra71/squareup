@@ -1,6 +1,6 @@
 export interface User {
   id: string;
-  email: string;
+  phoneNumber: string;
   displayName: string;
   photoURL?: string;
   createdAt: Date;
@@ -20,7 +20,7 @@ export interface MemberDetail {
   userId: string;
   displayName: string;
   photoURL?: string;
-  email: string;
+  phoneNumber: string;
 }
 
 export interface Expense {

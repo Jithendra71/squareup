@@ -13,7 +13,7 @@ A simple expense splitting app for personal use with friends. Built using React 
 - **React Hook Form** - Form handling
 
 ### Backend (Firebase)
-- **Firebase Authentication** - User authentication (Email & Google)
+- **Firebase Authentication** - User authentication (Phone number with OTP)
 - **Cloud Firestore** - Real-time NoSQL database
 - **Cloud Storage** - Profile pictures storage
 - **Firebase Cloud Messaging (FCM)** - Push notifications (optional)
@@ -23,13 +23,13 @@ A simple expense splitting app for personal use with friends. Built using React 
 ## Core Features (MVP)
 
 ### 1. User Authentication
-- Email/password signup & login
-- Google login (optional)
-- Profile management (name, email, profile picture)
+- Phone number authentication with OTP verification
+- Automatic account creation on first login
+- Profile management (name, phone number, profile picture)
 
 ### 2. Group Management
 - Create groups
-- Add members by email
+- Add members by phone number
 - Group details (name, description)
 - Leave/delete group
 
@@ -61,7 +61,7 @@ A simple expense splitting app for personal use with friends. Built using React 
 ```
 users/
   {userId}/
-    - email
+    - phoneNumber
     - displayName
     - photoURL
     - createdAt
@@ -73,7 +73,7 @@ groups/
     - createdBy
     - createdAt
     - members[] (userId references)
-    - memberDetails[] {userId, displayName, photoURL}
+    - memberDetails[] {userId, displayName, phoneNumber, photoURL}
 
 expenses/
   {expenseId}/
@@ -139,7 +139,7 @@ npm install react-native-image-picker
 
 #### Step 3: Firebase Project Setup
 1. Create Firebase project at console.firebase.google.com
-2. Enable Authentication (Email & Google)
+2. Enable Authentication (Phone number)
 3. Create Firestore database (start in test mode)
 4. Enable Storage
 5. Download `google-services.json` (Android) and `GoogleService-Info.plist` (iOS)
@@ -171,15 +171,17 @@ src/
 ### Phase 2: Authentication (Week 2)
 
 #### Tasks:
-1. Create Login & Signup screens
-2. Implement Firebase Authentication
-3. Set up auth state with Zustand
-4. Profile setup for new users
-5. Basic error handling
+1. Create Phone Number Input screen
+2. Create OTP Verification screen
+3. Implement Firebase Phone Authentication
+4. Set up auth state with Zustand
+5. Profile setup for new users (name, photo)
+6. Basic error handling
 
 #### Key Files:
-- `src/screens/auth/LoginScreen.tsx`
-- `src/screens/auth/SignupScreen.tsx`
+- `src/screens/auth/PhoneInputScreen.tsx`
+- `src/screens/auth/OtpVerificationScreen.tsx`
+- `src/screens/auth/ProfileSetupScreen.tsx`
 - `src/services/firebase/auth.ts`
 - `src/store/authStore.ts`
 
@@ -205,7 +207,7 @@ src/
 
 #### Tasks:
 1. Create group screen with form
-2. Add members by email lookup
+2. Add members by phone number lookup
 3. Group details screen (members list, expenses)
 4. Leave group functionality
 5. Firestore integration

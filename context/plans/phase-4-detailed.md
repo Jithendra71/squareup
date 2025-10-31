@@ -7,7 +7,7 @@
 
 ## Overview
 
-This phase implements the core group management features that allow users to create groups, add members by email, view group details, manage members, and leave/delete groups. Groups are the foundation for expense splitting in the app.
+This phase implements the core group management features that allow users to create groups, add members by phone number, view group details, manage members, and leave/delete groups. Groups are the foundation for expense splitting in the app.
 
 ---
 
@@ -73,7 +73,7 @@ User Action → Component → Service (Firestore) → Store → UI Update
            userId: user.id,
            displayName: user.displayName,
            photoURL: user.photoURL,
-           email: user.email,
+           phoneNumber: user.phoneNumber,
          }));
 
          const groupData = {
@@ -188,7 +188,7 @@ User Action → Component → Service (Firestore) → Store → UI Update
            userId: user.id,
            displayName: user.displayName,
            photoURL: user.photoURL,
-           email: user.email,
+           phoneNumber: user.phoneNumber,
          }));
 
          await firestore()
@@ -380,16 +380,16 @@ User Action → Component → Service (Firestore) → Store → UI Update
        return unsubscribe;
      }, [user?.id]);
 
-     const createGroup = async (name: string, description: string, memberEmails: string[]) => {
+     const createGroup = async (name: string, description: string, memberPhoneNumbers: string[]) => {
        try {
          if (!user) throw new Error('User not authenticated');
 
          setLoading(true);
          setError(null);
 
-         // Search for users by email
+         // Search for users by phone number
          const memberUsers = await Promise.all(
-           memberEmails.map((email) => groupsService.searchUsersByEmail(email))
+           memberPhoneNumbers.map((phoneNumber) => usersService.searchUsersByPhoneNumber(phoneNumber))
          );
 
          // Flatten and get user IDs
@@ -458,12 +458,12 @@ User Action → Component → Service (Firestore) → Store → UI Update
        }
      };
 
-     const addMembers = async (memberEmails: string[]) => {
+     const addMembers = async (memberPhoneNumbers: string[]) => {
        try {
          setError(null);
          // Search for users and add them
          const memberUsers = await Promise.all(
-           memberEmails.map((email) => usersService.searchUsersByEmail(email))
+           memberPhoneNumbers.map((phoneNumber) => usersService.searchUsersByPhoneNumber(phoneNumber))
          );
          const memberIds = memberUsers.flat().map((u) => u.id);
          await groupsService.addMembers(groupId, memberIds);
@@ -547,8 +547,8 @@ User Action → Component → Service (Firestore) → Store → UI Update
 
    interface MemberSearchInputProps {
      selectedMembers: string[];
-     onAddMember: (email: string) => void;
-     onRemoveMember: (email: string) => void;
+     onAddMember: (phoneNumber: string) => void;
+     onRemoveMember: (phoneNumber: string) => void;
    }
 
    export const MemberSearchInput: React.FC<MemberSearchInputProps> = ({
@@ -568,15 +568,15 @@ User Action → Component → Service (Firestore) → Store → UI Update
          return;
        }
 
-       // Simple email validation
-       if (!query.includes('@')) {
+       // Simple phone number validation (digits and + sign)
+       if (!/^[\d+\s-]+$/.test(query)) {
          setSearchResults([]);
          return;
        }
 
        try {
          setSearching(true);
-         const results = await usersService.searchUsersByEmail(query);
+         const results = await usersService.searchUsersByPhoneNumber(query);
          setSearchResults(results);
        } catch (error) {
          console.error('Search error:', error);
@@ -586,9 +586,9 @@ User Action → Component → Service (Firestore) → Store → UI Update
        }
      };
 
-     const handleSelectUser = (email: string) => {
-       if (!selectedMembers.includes(email)) {
-         onAddMember(email);
+     const handleSelectUser = (phoneNumber: string) => {
+       if (!selectedMembers.includes(phoneNumber)) {
+         onAddMember(phoneNumber);
          setSearchQuery('');
          setSearchResults([]);
        }
@@ -597,12 +597,13 @@ User Action → Component → Service (Firestore) → Store → UI Update
      return (
        <View style={styles.container}>
          <TextInput
-           label="Add members by email"
+           label="Add members by phone number"
            value={searchQuery}
            onChangeText={handleSearch}
            mode="outlined"
-           keyboardType="email-address"
+           keyboardType="phone-pad"
            autoCapitalize="none"
+           placeholder="+91XXXXXXXXXX"
            left={<TextInput.Icon icon="account-search" />}
          />
 
@@ -612,8 +613,8 @@ User Action → Component → Service (Firestore) → Store → UI Update
                <List.Item
                  key={user.id}
                  title={user.displayName}
-                 description={user.email}
-                 onPress={() => handleSelectUser(user.email)}
+                 description={user.phoneNumber}
+                 onPress={() => handleSelectUser(user.phoneNumber)}
                  left={(props) => <List.Icon {...props} icon="account" />}
                  right={(props) => <List.Icon {...props} icon="plus" />}
                />
@@ -633,13 +634,13 @@ User Action → Component → Service (Firestore) → Store → UI Update
                Selected members:
              </Text>
              <View style={styles.chipsContainer}>
-               {selectedMembers.map((email) => (
+               {selectedMembers.map((phoneNumber) => (
                  <Chip
-                   key={email}
-                   onClose={() => onRemoveMember(email)}
+                   key={phoneNumber}
+                   onClose={() => onRemoveMember(phoneNumber)}
                    style={styles.chip}
                  >
-                   {email}
+                   {phoneNumber}
                  </Chip>
                ))}
              </View>
@@ -738,14 +739,14 @@ User Action → Component → Service (Firestore) → Store → UI Update
        },
      });
 
-     const handleAddMember = (email: string) => {
-       if (!selectedMembers.includes(email)) {
-         setSelectedMembers([...selectedMembers, email]);
+     const handleAddMember = (phoneNumber: string) => {
+       if (!selectedMembers.includes(phoneNumber)) {
+         setSelectedMembers([...selectedMembers, phoneNumber]);
        }
      };
 
-     const handleRemoveMember = (email: string) => {
-       setSelectedMembers(selectedMembers.filter((e) => e !== email));
+     const handleRemoveMember = (phoneNumber: string) => {
+       setSelectedMembers(selectedMembers.filter((p) => p !== phoneNumber));
      };
 
      const onSubmit = async (data: CreateGroupFormData) => {
@@ -855,7 +856,7 @@ User Action → Component → Service (Firestore) → Store → UI Update
 #### Acceptance Criteria:
 - [ ] Group name input with validation
 - [ ] Description input (optional)
-- [ ] Member search by email
+- [ ] Member search by phone number
 - [ ] Selected members displayed as chips
 - [ ] Create group functionality
 - [ ] Loading state
@@ -913,7 +914,7 @@ User Action → Component → Service (Firestore) → Store → UI Update
      return (
        <List.Item
          title={member.displayName}
-         description={member.email}
+         description={member.phoneNumber}
          left={() =>
            member.photoURL ? (
              <Avatar.Image size={40} source={{ uri: member.photoURL }} style={styles.avatar} />
@@ -1391,7 +1392,7 @@ User Action → Component → Service (Firestore) → Store → UI Update
 **Group Creation:**
 - [ ] Create group with just name
 - [ ] Create group with name and description
-- [ ] Add members by searching email
+- [ ] Add members by searching phone number
 - [ ] Create group without members (should include creator)
 - [ ] Verify group appears in groups list
 - [ ] Verify all members see the group
@@ -1434,7 +1435,7 @@ describe('Group Management', () => {
 ### Issue 1: Members Not Found
 **Solution:**
 - User must be registered in the app first
-- Email search is case-sensitive
+- Phone number must match exactly (including country code)
 - Check users collection in Firestore
 
 ### Issue 2: Real-time Updates Not Working
@@ -1456,7 +1457,7 @@ describe('Group Management', () => {
 Phase 4 is complete when:
 
 1. ✅ Users can create groups with name and description
-2. ✅ Users can search and add members by email
+2. ✅ Users can search and add members by phone number
 3. ✅ Groups list displays all user's groups
 4. ✅ Group details show members and info
 5. ✅ Creator can edit group details

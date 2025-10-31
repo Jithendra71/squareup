@@ -1054,8 +1054,8 @@ Dashboard Screen
            <Text variant="headlineSmall" style={styles.name}>
              {user?.displayName}
            </Text>
-           <Text variant="bodyMedium" style={styles.email}>
-             {user?.email}
+           <Text variant="bodyMedium" style={styles.phoneNumber}>
+             {user?.phoneNumber}
            </Text>
 
            <Button
@@ -1193,7 +1193,7 @@ Dashboard Screen
        marginTop: 16,
        fontWeight: 'bold',
      },
-     email: {
+     phoneNumber: {
        color: COLORS.dark,
        opacity: 0.6,
        marginTop: 4,
