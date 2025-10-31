@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [  
-      "Bash(.claude/acode/scripts/metadata.sh:*)",
-      "Bash(mkdir -p context:*)"
-    ]
-  }
-}
