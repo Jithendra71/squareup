@@ -89,6 +89,7 @@ GoogleService-Info.plist
 context/
 
 # Claude code configuration files
-.claude/
+claude
 .acode/
 .claude/*
+CLAUDE*
